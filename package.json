@@ -1,0 +1,275 @@
+{
+  "name": "easy-git",
+  "displayName": "Easy Git",
+  "description": "IntelliJ IDEA-style Git for VS Code and Cursor: Commit window, Git Log graph, merge editor, changelists, stash and shelf.",
+  "version": "1.0.0",
+  "publisher": "easy-git",
+  "icon": "resources/icon.png",
+  "galleryBanner": {
+    "color": "#3A94D6",
+    "theme": "dark"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "log",
+    "merge",
+    "conflict",
+    "changelist",
+    "stash",
+    "intellij",
+    "idea"
+  ],
+  "author": {
+    "name": "LumiSpring",
+    "email": "lumispring0129@gmail.com"
+  },
+  "homepage": "https://github.com/LumiSpring/easy-git-vscode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LumiSpring/easy-git-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LumiSpring/easy-git-vscode/issues",
+    "email": "lumispring0129@gmail.com"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "easyGitCommit",
+          "title": "Easy Git",
+          "icon": "resources/git.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "easyGitLog",
+          "title": "Git Log",
+          "icon": "resources/git.svg"
+        }
+      ]
+    },
+    "views": {
+      "easyGitCommit": [
+        {
+          "type": "webview",
+          "id": "easyGit.commit",
+          "name": "Commit"
+        }
+      ],
+      "easyGitLog": [
+        {
+          "type": "webview",
+          "id": "easyGit.log",
+          "name": "Log",
+          "visibility": "visible"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "easyGit.initRepository",
+        "title": "Easy Git: Initialize Repository"
+      },
+      {
+        "command": "easyGit.refresh",
+        "title": "Easy Git: Refresh"
+      },
+      {
+        "command": "easyGit.commit",
+        "title": "Easy Git: Commit"
+      },
+      {
+        "command": "easyGit.commitAndPush",
+        "title": "Easy Git: Commit and Push"
+      },
+      {
+        "command": "easyGit.fetch",
+        "title": "Easy Git: Fetch"
+      },
+      {
+        "command": "easyGit.pull",
+        "title": "Easy Git: Pull"
+      },
+      {
+        "command": "easyGit.push",
+        "title": "Easy Git: Push"
+      },
+      {
+        "command": "easyGit.updateProject",
+        "title": "Easy Git: Update Project"
+      },
+      {
+        "command": "easyGit.showCommitView",
+        "title": "Easy Git: Show Commit Window"
+      },
+      {
+        "command": "easyGit.showLogView",
+        "title": "Easy Git: Show Git Log"
+      },
+      {
+        "command": "easyGit.showBranchMenu",
+        "title": "Easy Git: Branches"
+      },
+      {
+        "command": "easyGit.stash",
+        "title": "Easy Git: Stash Changes"
+      },
+      {
+        "command": "easyGit.stashPop",
+        "title": "Easy Git: Pop Stash"
+      },
+      {
+        "command": "easyGit.continue",
+        "title": "Easy Git: Continue Operation"
+      },
+      {
+        "command": "easyGit.abort",
+        "title": "Easy Git: Abort Operation"
+      },
+      {
+        "command": "easyGit.operationMenu",
+        "title": "Easy Git: Continue or Abort Operation"
+      },
+      {
+        "command": "easyGit.showConflicts",
+        "title": "Easy Git: Conflicts"
+      },
+      {
+        "command": "easyGit.merge.apply",
+          "title": "Apply",
+          "icon": "$(check)",
+          "enablement": "easyGit.mergeCanApply"
+      },
+      {
+        "command": "easyGit.merge.acceptOurs",
+        "title": "Accept Yours",
+        "icon": "$(arrow-right)",
+        "enablement": "easyGit.mergeActive"
+      },
+      {
+        "command": "easyGit.merge.acceptTheirs",
+        "title": "Accept Theirs",
+        "icon": "$(arrow-left)",
+        "enablement": "easyGit.mergeActive"
+      },
+      {
+        "command": "easyGit.merge.prevConflict",
+        "title": "Previous Conflict",
+        "icon": "$(arrow-up)",
+        "enablement": "easyGit.mergeActive"
+      },
+      {
+        "command": "easyGit.merge.nextConflict",
+        "title": "Next Conflict",
+        "icon": "$(arrow-down)",
+        "enablement": "easyGit.mergeActive"
+      },
+      {
+        "command": "easyGit.merge.acceptAllOurs",
+        "title": "Accept All Yours",
+        "enablement": "easyGit.mergeActive"
+      },
+      {
+        "command": "easyGit.merge.acceptAllTheirs",
+        "title": "Accept All Theirs",
+        "enablement": "easyGit.mergeActive"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "easyGit.merge.apply",
+          "when": "easyGit.mergeActive",
+          "group": "navigation@0"
+        },
+        {
+          "command": "easyGit.merge.acceptOurs",
+          "when": "easyGit.mergeActive",
+          "group": "navigation@1"
+        },
+        {
+          "command": "easyGit.merge.acceptTheirs",
+          "when": "easyGit.mergeActive",
+          "group": "navigation@2"
+        },
+        {
+          "command": "easyGit.merge.prevConflict",
+          "when": "easyGit.mergeActive",
+          "group": "navigation@4"
+        },
+        {
+          "command": "easyGit.merge.nextConflict",
+          "when": "easyGit.mergeActive",
+          "group": "navigation@5"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "easyGit.showCommitView",
+        "key": "alt+0",
+        "mac": "alt+0"
+      },
+      {
+        "command": "easyGit.showLogView",
+        "key": "alt+9",
+        "mac": "alt+9"
+      }
+    ],
+    "configuration": {
+      "title": "Easy Git",
+      "properties": {
+        "easyGit.language": {
+          "type": "string",
+          "enum": ["zh-cn", "en"],
+          "enumItemLabels": ["简体中文", "English"],
+          "default": "zh-cn",
+          "description": "Language for hints, prompts, and notifications. Buttons and menus stay English.",
+          "markdownDescription": "提示信息语言。按钮、菜单等界面始终为英文。\n\nLanguage for hints, prompts, and notifications. UI labels stay English."
+        },
+        "easyGit.gitPath": {
+          "type": "string",
+          "default": "git",
+          "description": "Path to the git executable"
+        },
+        "easyGit.pullRebase": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use rebase when pulling / updating the project"
+        },
+        "easyGit.logLimit": {
+          "type": "number",
+          "default": 500,
+          "description": "Maximum number of commits shown in the Git Log"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "npm run compile:ext && npm run compile:webview",
+    "compile:ext": "node esbuild.mjs",
+    "compile:webview": "npm --prefix webview-ui run build",
+    "watch": "node esbuild.mjs --watch",
+    "package": "npm run compile && npx --yes @vscode/vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}

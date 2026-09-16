@@ -1,0 +1,186 @@
+.merge-app {
+  min-height: 100%;
+}
+
+.merge-toolbar .merge-path {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.merge-count {
+  color: var(--eg-conflict);
+  flex-shrink: 0;
+}
+
+.merge-toolbar .primary {
+  background: var(--eg-accent);
+  color: var(--eg-accent-fg);
+  border-color: transparent;
+}
+
+.merge-head,
+.merge-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr) 32px minmax(0, 1fr);
+}
+
+.merge-head {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--eg-border);
+  background: color-mix(in srgb, var(--eg-bg) 88%, black);
+}
+
+.merge-col-title {
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.merge-col-title.ours {
+  color: var(--eg-added);
+}
+
+.merge-col-title.theirs {
+  color: var(--eg-modified);
+}
+
+.merge-gutter-head {
+  background: color-mix(in srgb, var(--eg-bg) 80%, black);
+  border-left: 1px solid var(--eg-border);
+  border-right: 1px solid var(--eg-border);
+}
+
+.merge-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.merge-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.merge-row {
+  border-bottom: 1px solid var(--eg-border);
+  align-items: stretch;
+}
+
+.merge-row.current {
+  outline: 1px solid color-mix(in srgb, var(--eg-conflict) 65%, transparent);
+  outline-offset: -1px;
+}
+
+.merge-cell {
+  min-width: 0;
+  min-height: 18px;
+}
+
+.merge-cell.side {
+  overflow: hidden;
+}
+
+.merge-code,
+.merge-cell textarea {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: var(--vscode-editor-font-family, ui-monospace, Consolas, monospace);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  resize: none;
+}
+
+.merge-cell textarea {
+  padding: 0 8px;
+  outline: none;
+  display: block;
+  box-sizing: border-box;
+}
+
+.merge-line {
+  display: block;
+  min-height: 18px;
+  padding: 0 8px;
+}
+
+.merge-line-add {
+  background: color-mix(in srgb, var(--eg-added) 28%, var(--eg-bg));
+}
+
+.merge-line-del {
+  background: color-mix(in srgb, var(--eg-deleted) 35%, var(--eg-bg));
+  color: var(--eg-deleted);
+  text-decoration: line-through;
+}
+
+.merge-line-conflict {
+  background: color-mix(in srgb, #c75450 32%, var(--eg-bg));
+}
+
+.merge-row.conflict.unresolved .merge-cell.result {
+  background: color-mix(in srgb, #c75450 16%, var(--eg-bg));
+}
+
+.merge-row.ours .merge-cell.side:first-child,
+.merge-row.theirs .merge-cell.side:last-child {
+  box-shadow: inset 2px 0 0 var(--eg-added);
+}
+
+.merge-row.conflict .merge-cell.side {
+  box-shadow: inset 2px 0 0 #c75450;
+}
+
+.merge-gutter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  background: color-mix(in srgb, var(--eg-bg) 78%, black);
+  border-left: 1px solid var(--eg-border);
+  border-right: 1px solid var(--eg-border);
+}
+
+.merge-row.conflict .merge-gutter {
+  background: color-mix(in srgb, #c75450 18%, var(--eg-bg));
+}
+
+.merge-gutter button {
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--eg-fg);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.merge-gutter button:hover {
+  background: var(--eg-hover);
+}
+
+.merge-gutter button.accepted {
+  color: var(--eg-added);
+  font-weight: 700;
+}
+
+.merge-gutter button.ignored {
+  color: var(--eg-deleted);
+  opacity: 0.55;
+}
+
+.merge-row.text .merge-cell.side {
+  color: var(--eg-muted);
+}
