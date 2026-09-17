@@ -21,6 +21,7 @@ import type {
   DiffPayload,
   FilesPayload,
   FileStatus,
+  GitFileChange,
   HashPayload,
   HostAction,
   HostToWebview,
@@ -64,6 +65,7 @@ export class AppHost implements vscode.Disposable {
   private search = "";
   private refreshing = false;
   private refreshQueued = false;
+  private commitStateSeq = 0;
   private lastCommitState?: CommitViewState;
   private gitWatch?: vscode.Disposable & { resync(): void };
   private readonly disposables: vscode.Disposable[] = [];
@@ -127,13 +129,17 @@ export class AppHost implements vscode.Disposable {
     try {
       do {
         this.refreshQueued = false;
-        await this.git.discoverRepo();
-        this.gitWatch?.resync();
-        await this.pushCommitState();
-        await this.pushLogState();
-        const status = this.lastCommitState;
-        this.statusBar?.update(Boolean(this.git.repoRoot), status?.branch, status?.ahead, status?.behind, status?.operation ?? "none");
-        await this.conflictsPanel.refresh();
+        try {
+          await this.git.discoverRepo();
+          this.gitWatch?.resync();
+          await this.pushCommitState();
+          await this.pushLogState();
+          const status = this.lastCommitState;
+          this.statusBar?.update(Boolean(this.git.repoRoot), status?.branch, status?.ahead, status?.behind, status?.operation ?? "none");
+          await this.conflictsPanel.refresh();
+        } catch {
+          /* A queued refresh from commit/push still needs to run. */
+        }
       } while (this.refreshQueued);
     } finally {
       this.refreshing = false;
@@ -1165,13 +1171,21 @@ export class AppHost implements vscode.Disposable {
   }
 
   private async pushCommitState(): Promise<void> {
+    const seq = ++this.commitStateSeq;
     const view = this.changeView.get();
     const status = await this.repo.status(view.showIgnored);
+    if (seq !== this.commitStateSeq) {
+      return;
+    }
+    this.commitView?.setBadge(uncommittedBadgeCount(status.files));
     const [stashes, shelves, modules] = await Promise.all([
       this.repo.stashList(),
       this.shelves.list(),
       this.repo.listModules(),
     ]);
+    if (seq !== this.commitStateSeq) {
+      return;
+    }
     const state: CommitViewState = {
       repoRoot: this.git.repoRoot,
       workspaceFolder: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
@@ -1190,7 +1204,7 @@ export class AppHost implements vscode.Disposable {
     };
     this.lastCommitState = state;
     this.commitView?.post({ type: "commitState", payload: state });
-    this.commitView?.setBadge(status.files.length);
+    this.commitView?.setBadge(uncommittedBadgeCount(status.files));
   }
 
   private async pushLogState(): Promise<void> {
@@ -1269,6 +1283,10 @@ export class AppHost implements vscode.Disposable {
       view.post(message);
     }
   }
+}
+
+function uncommittedBadgeCount(files: GitFileChange[]): number {
+  return new Set(files.filter((file) => file.status !== "ignored").map((file) => file.path)).size;
 }
 
 function formatShelfTime(timestamp: number): string {

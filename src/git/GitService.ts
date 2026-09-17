@@ -103,7 +103,7 @@ export class GitService {
 
   async exec(
     args: string[],
-    options?: { cwd?: string; input?: string; silent?: boolean; timeoutMs?: number },
+    options?: { cwd?: string; input?: string; silent?: boolean; timeoutMs?: number; optionalLocks?: boolean },
   ): Promise<GitExecResult> {
     await this.resolveGitPath();
     const cwd = options?.cwd ?? this.repoRoot ?? process.cwd();
@@ -118,9 +118,9 @@ export class GitService {
           env: {
             ...process.env,
             GIT_TERMINAL_PROMPT: "0",
-            GIT_OPTIONAL_LOCKS: "0",
             LANG: "C",
             LC_ALL: "C",
+            ...(options?.optionalLocks ? {} : { GIT_OPTIONAL_LOCKS: "0" }),
           },
         });
         let stdout = "";
@@ -173,7 +173,10 @@ export class GitService {
     return result;
   }
 
-  async execOk(args: string[], options?: { cwd?: string; input?: string; silent?: boolean; timeoutMs?: number }): Promise<GitExecResult> {
+  async execOk(
+    args: string[],
+    options?: { cwd?: string; input?: string; silent?: boolean; timeoutMs?: number; optionalLocks?: boolean },
+  ): Promise<GitExecResult> {
     const result = await this.exec(args, options);
     if (result.code !== 0) {
       const detail = (result.stderr || result.stdout).trim() || `exit ${result.code}`;

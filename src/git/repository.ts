@@ -76,7 +76,7 @@ export class GitRepository {
     if (showIgnored) {
       args.push("--ignored=matching");
     }
-    const result = await this.git.exec(args, { silent: true });
+    const result = await this.git.exec(args, { silent: true, optionalLocks: true });
     const parsed = parsePorcelainV2(result.stdout);
     const operation = await this.git.getOperation();
     if (!parsed.branch) {

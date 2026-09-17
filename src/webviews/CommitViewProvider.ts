@@ -8,6 +8,7 @@ export class CommitViewProvider implements vscode.WebviewViewProvider {
   static readonly viewType = "easyGit.commit";
   private view?: vscode.WebviewView;
   private pendingBadge = 0;
+  private badgeTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
     private readonly extensionUri: vscode.Uri,
@@ -25,11 +26,16 @@ export class CommitViewProvider implements vscode.WebviewViewProvider {
       void this.host.handleMessage("commit", message);
     });
     webviewView.onDidChangeVisibility(() => {
+      this.applyBadge();
       if (!webviewView.visible) {
         webviewView.webview.postMessage({ type: "dismissUi" });
       }
     });
     webviewView.onDidDispose(() => {
+      if (this.badgeTimer) {
+        clearTimeout(this.badgeTimer);
+        this.badgeTimer = undefined;
+      }
       if (this.view === webviewView) {
         this.view = undefined;
       }
@@ -38,7 +44,7 @@ export class CommitViewProvider implements vscode.WebviewViewProvider {
   }
 
   setBadge(count: number): void {
-    this.pendingBadge = Math.max(0, count);
+    this.pendingBadge = Math.max(0, Math.round(count));
     this.applyBadge();
   }
 
@@ -46,10 +52,21 @@ export class CommitViewProvider implements vscode.WebviewViewProvider {
     if (!this.view) {
       return;
     }
-    this.view.badge =
+    const next =
       this.pendingBadge > 0
         ? { value: this.pendingBadge, tooltip: t("tooltip.uncommitted", { count: this.pendingBadge }) }
         : undefined;
+    // Cursor/VS Code often ignores a badge assignment that looks like a no-op.
+    // Flip to 0 first so the activity-bar decoration is forced to re-render.
+    this.view.badge = { value: 0, tooltip: next?.tooltip ?? "" };
+    if (this.badgeTimer) {
+      clearTimeout(this.badgeTimer);
+    }
+    this.badgeTimer = setTimeout(() => {
+      if (this.view) {
+        this.view.badge = next;
+      }
+    }, 0);
   }
 
   post(message: HostToWebview): void {
