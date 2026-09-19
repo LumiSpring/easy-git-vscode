@@ -1,6 +1,6 @@
 # Easy Git
 
-**v1.0.0** · IntelliJ IDEA 风格的 Git 工具窗口，用于 VS Code / Cursor。
+**v1.0.1** · IntelliJ IDEA 风格的 Git 工具窗口，用于 VS Code / Cursor。
 
 **语言：** [简体中文](README.md) · [English](README.en.md)
 
@@ -65,16 +65,16 @@ Easy Git 把日常 Git 操作收成两块熟悉的工作台：**左侧 Commit** 
 ### 安装 .vsix（推荐日常使用）
 
 1. 命令面板运行 `Extensions: Install from VSIX...`
-2. 选择仓库根目录的 `easy-git-1.0.0.vsix`
+2. 选择仓库根目录的 `easy-git-1.0.1.vsix`
 3. 重新加载窗口
 
 或在终端执行：
 
 ```bash
-cursor --install-extension easy-git-1.0.0.vsix
+cursor --install-extension easy-git-1.0.1.vsix
 ```
 
-VS Code 则用 `code --install-extension easy-git-1.0.0.vsix`。
+VS Code 则用 `code --install-extension easy-git-1.0.1.vsix`。
 
 源码与发行版：https://github.com/LumiSpring/easy-git-vscode
 

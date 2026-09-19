@@ -1,6 +1,6 @@
 # Easy Git
 
-**v1.0.0** · IntelliJ IDEA-style Git tool windows for VS Code and Cursor.
+**v1.0.1** · IntelliJ IDEA-style Git tool windows for VS Code and Cursor.
 
 **Languages:** [English](README.en.md) · [简体中文](README.md)
 
@@ -65,16 +65,16 @@ You can also right-click a conflict file: Accept Yours, Accept Theirs, Resolve i
 ### Install from VSIX (recommended)
 
 1. Command Palette → `Extensions: Install from VSIX...`
-2. Pick `easy-git-1.0.0.vsix` in the repo root
+2. Pick `easy-git-1.0.1.vsix` in the repo root
 3. Reload the window
 
 Or in a terminal:
 
 ```bash
-cursor --install-extension easy-git-1.0.0.vsix
+cursor --install-extension easy-git-1.0.1.vsix
 ```
 
-For VS Code: `code --install-extension easy-git-1.0.0.vsix`.
+For VS Code: `code --install-extension easy-git-1.0.1.vsix`.
 
 Source and releases: https://github.com/LumiSpring/easy-git-vscode
 
