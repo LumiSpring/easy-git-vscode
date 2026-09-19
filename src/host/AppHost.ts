@@ -6,6 +6,7 @@ import { detectEol, hasConflictMarkers, parseConflictFile, threeWayMerge, toGitC
 import { GitError, GitService } from "../git/GitService";
 import { applyUnifiedDiff, extractFilePatch, patchFileIsDeleted, patchFileIsNew } from "../git/patch";
 import { GitRepository } from "../git/repository";
+import { EditorQuickDiff } from "../git/quickDiff";
 import { watchGit } from "../git/watch";
 import { getLocale, parseLocale, setLocale, t } from "../i18n";
 import type {
@@ -54,6 +55,8 @@ export class AppHost implements vscode.Disposable {
   readonly changeView: ChangeViewStore;
   readonly logChangeView: ChangeViewStore;
   readonly virtualDocs = new StringContentProvider();
+  readonly revisionDocs = new GitRevisionContentProvider(this.git);
+  private readonly quickDiff = new EditorQuickDiff(this.git);
   commitView?: CommitViewProvider;
   logViews: GitLogViewProvider[] = [];
   statusBar?: StatusBarController;
@@ -78,6 +81,7 @@ export class AppHost implements vscode.Disposable {
     this.logChangeView = new ChangeViewStore(context, "easyGit.logChangeView");
     this.mergeEditor = new MergeEditor(this);
     this.conflictsPanel = new ConflictsPanel(this);
+    this.disposables.push(this.quickDiff);
     this.syncLocale();
     this.disposables.push(
       this.mergeEditor,
@@ -111,6 +115,7 @@ export class AppHost implements vscode.Disposable {
     await this.git.discoverRepo();
     this.gitWatch = watchGit(this.git, () => void this.refresh());
     this.disposables.push(this.gitWatch);
+    this.quickDiff.resync();
     await this.refresh();
   }
 
@@ -132,6 +137,8 @@ export class AppHost implements vscode.Disposable {
         try {
           await this.git.discoverRepo();
           this.gitWatch?.resync();
+          this.quickDiff.resync();
+          this.revisionDocs.invalidate();
           await this.pushCommitState();
           await this.pushLogState();
           const status = this.lastCommitState;

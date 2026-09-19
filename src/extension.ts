@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(
     host,
     statusBar,
-    vscode.workspace.registerTextDocumentContentProvider(GitRevisionContentProvider.scheme, new GitRevisionContentProvider(host.git)),
+    vscode.workspace.registerTextDocumentContentProvider(GitRevisionContentProvider.scheme, host.revisionDocs),
     vscode.window.registerWebviewViewProvider(CommitViewProvider.viewType, commitView, webviewOptions),
     vscode.window.registerWebviewViewProvider(GitLogViewProvider.viewType, logView, webviewOptions),
     vscode.commands.registerCommand("easyGit.initRepository", () =>

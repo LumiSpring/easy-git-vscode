@@ -27,14 +27,28 @@ export class StringContentProvider implements vscode.TextDocumentContentProvider
 
 export class GitRevisionContentProvider implements vscode.TextDocumentContentProvider {
   static readonly scheme = "easy-git";
+  private readonly served = new Set<string>();
+  private readonly emitter = new vscode.EventEmitter<vscode.Uri>();
+  readonly onDidChange = this.emitter.event;
 
   constructor(private readonly git: GitService) {}
 
   async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+    this.served.add(uri.toString());
     const params = new URLSearchParams(uri.query);
     const ref = params.get("ref") ?? "HEAD";
     const filePath = params.get("path") ?? uri.path.replace(/^\//, "");
-    return this.git.showFile(ref, filePath);
+    try {
+      return await this.git.showFile(ref, filePath);
+    } catch {
+      return "";
+    }
+  }
+
+  invalidate(): void {
+    for (const value of this.served) {
+      this.emitter.fire(vscode.Uri.parse(value));
+    }
   }
 
   static uri(ref: string, filePath: string, repoRoot: string): vscode.Uri {

@@ -3,7 +3,7 @@
   "displayName": "Easy Git",
   "description": "IntelliJ IDEA-style Git for VS Code and Cursor: Commit window, Git Log graph, merge editor, changelists, stash and shelf.",
   "version": "1.0.0",
-  "publisher": "easy-git",
+  "publisher": "lumiSpring",
   "icon": "resources/icon.png",
   "galleryBanner": {
     "color": "#3A94D6",
